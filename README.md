@@ -1,2 +1,2 @@
-# Intrusion-Detection-System
-Raw Socket Handling for Network Attack &amp; Intrusion Detection System  (CN project)
+# Network Attack &amp; Intrusion Detection System  
+### using Raw Socket Handling (CN Project)
