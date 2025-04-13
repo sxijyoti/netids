@@ -28,14 +28,19 @@ class IDSClient:
             # Tell server what data port we're using
             self.control_socket.send(str(self.data_port).encode())
             
+            # Small delay to allow server to process
+            time.sleep(0.5)
+            
             # Connect to data channel
             self.data_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.data_socket.connect((self.server_ip, self.data_port))
             
             # Send client_id to server on data channel for identification
             self.data_socket.send(self.client_id.encode())
-            
             print(f"[+] Data channel established")
+            
+            # Another small delay to ensure server processes data channel connection
+            time.sleep(0.5)
             
             self.running = True
             return True

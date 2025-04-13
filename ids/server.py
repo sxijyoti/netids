@@ -146,7 +146,6 @@ def start_control_server():
 def start_data_server():
     """Start the data server for alert broadcasts"""
     data_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    # Set socket option to allow reuse of address
     data_server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     data_server.bind(('0.0.0.0', 8889))
     data_server.listen(5)
@@ -156,24 +155,29 @@ def start_data_server():
         while True:
             client_socket, client_address = data_server.accept()
             
-            # Receive client_id to identify which client is connecting
-            client_id = client_socket.recv(1024).decode()
-            
-            # Update clients dictionary with data socket
-            with client_lock:
-                if client_id in clients:
-                    clients[client_id]['data_socket'] = client_socket
-                    print(f"[+] Data channel established with client {client_id}")
-                else:
-                    # Unknown client, close connection
-                    client_socket.close()
+            try:
+                # Receive client_id to identify which client is connecting
+                client_id = client_socket.recv(1024).decode()
+                
+                # Update clients dictionary with data socket
+                with client_lock:
+                    if client_id in clients:
+                        clients[client_id]['data_socket'] = client_socket
+                        print(f"[+] Data channel established with client {client_id}")
+                    else:
+                        # Unknown client, close connection
+                        print(f"[!] Unknown client ID: {client_id}")
+                        client_socket.close()
+            except Exception as e:
+                print(f"[!] Error establishing data channel: {e}")
+                client_socket.close()
     except KeyboardInterrupt:
         print("\n[!] Data server stopped.")
     except Exception as e:
         print(f"[!] Error: {e}")
     finally:
         data_server.close()
-
+        
 if __name__ == "__main__":
     # Start all services in separate threads
     threading.Thread(target=start_sniffer, daemon=True).start()
