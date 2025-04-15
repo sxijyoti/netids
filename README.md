@@ -30,9 +30,9 @@ netids/
 ```bash
 # Start the server
 chmod +x run_ids_server.sh
-./run_ids_server.sh
+sudo ./run_ids_server.sh
 
 # In another terminal, start a client
 chmod +x run_ids_client.sh
-./run_ids_client.sh
+sudo ./run_ids_client.sh
 ```

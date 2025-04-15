@@ -4,7 +4,7 @@ from time import time
 from logger import log_alert
 
 syn_counts = defaultdict(list)
-THRESHOLD = 100
+THRESHOLD = 20
 
 def detect(packet):
     """Detect potential DDoS attacks (SYN floods)"""

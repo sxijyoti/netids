@@ -23,21 +23,32 @@ def packet_handler(packet):
             alert_type = None
             details = None
             
-            if ddos_result:
-                alert_type = "DDoS (SYN flood)"
-                details = f"Source IP: {ip_info['src_ip']}"
-            elif port_scan_result:
-                alert_type = "Port Scan"
-                details = f"Source IP: {ip_info['src_ip']}"
-            elif spoofing_result:
-                alert_type = "Spoofed IP"
-                details = f"Source IP: {ip_info['src_ip']}"
+            # if ddos_result:
+            #     alert_type = "DDoS (SYN flood)"
+            #     details = f"Source IP: {ip_info['src_ip']}"
+            # elif port_scan_result:
+            #     alert_type = "Port Scan"
+            #     details = f"Source IP: {ip_info['src_ip']}"
+            # elif spoofing_result:
+            #     alert_type = "Spoofed IP"
+            #     details = f"Source IP: {ip_info['src_ip']}"
                 
-            if alert_type and details:
-                # Log the alert
-                log_alert(alert_type, details)
-                # Broadcast to all clients
-                broadcast_alert(alert_type, details)
+            # if alert_type and details:
+            #     # Log the alert
+            #     log_alert(alert_type, details)
+            #     # Broadcast to all clients
+            #     broadcast_alert(alert_type, details)
+            if ddos_result:
+                log_alert("DDoS (SYN flood)", f"Source IP: {ip_info['src_ip']}")
+                broadcast_alert("DDoS (SYN flood)", f"Source IP: {ip_info['src_ip']}")
+
+            if port_scan_result:
+                log_alert("Port Scan", f"Source IP: {ip_info['src_ip']}")
+                broadcast_alert("Port Scan", f"Source IP: {ip_info['src_ip']}")
+
+            if spoofing_result:
+                log_alert("Spoofed IP", f"Source IP: {ip_info['src_ip']}")
+                broadcast_alert("Spoofed IP", f"Source IP: {ip_info['src_ip']}")
 
 def start_sniffer():
     """Start packet sniffing in a separate thread"""
