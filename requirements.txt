@@ -1,1 +1,14 @@
-# requirements
+socket
+time
+random
+socket
+concurrent.futures
+time
+socket
+struct
+random
+collections
+ipaddress
+threading
+sys
+datetime

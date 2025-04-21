@@ -18,15 +18,15 @@ def detect(packet):
     dst_port = packet["dst_port"]
     current_time = time()
 
-    # Reset tracking if time window expired
+    # reset tracking if time window expired
     if src_ip not in scan_times or current_time - scan_times[src_ip] > TIME_WINDOW:
         scan_tracker[src_ip].clear()
         scan_times[src_ip] = current_time
 
-    # Track unique ports accessed by this IP
+    # track unique ports accessed by this IP
     scan_tracker[src_ip].add(dst_port)
     
-    # Check if threshold is exceeded
+    # check if threshold is exceeded
     if len(scan_tracker[src_ip]) > PORT_SCAN_THRESHOLD:
         return True
         

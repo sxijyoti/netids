@@ -5,7 +5,7 @@ from parser import parse_packet
 from logger import log_alert
 from detector import ddos, port_scan, spoofing_detector
 
-# Global variables for client management
+# global variables for client management
 clients = {}
 client_lock = threading.Lock()
 
@@ -13,12 +13,12 @@ def packet_handler(packet):
     """Process captured packets and run detection algorithms"""
     ip_info = parse_packet(packet)
     if ip_info:
-        # Run detection algorithms
+        # run detection algorithms
         ddos_result = ddos.detect(ip_info)
         port_scan_result = port_scan.detect(ip_info)
         spoofing_result = spoofing_detector.detect(ip_info)
-        
-        # If any alerts, notify all connected clients
+
+        #  notify all connected clients if alert detected
         if ddos_result or port_scan_result or spoofing_result:
             alert_type = None
             details = None
@@ -38,6 +38,8 @@ def packet_handler(packet):
             #     log_alert(alert_type, details)
             #     # Broadcast to all clients
             #     broadcast_alert(alert_type, details)
+
+            # handle attacks
             if ddos_result:
                 log_alert("DDoS (SYN flood)", f"Source IP: {ip_info['src_ip']}")
                 broadcast_alert("DDoS (SYN flood)", f"Source IP: {ip_info['src_ip']}")
@@ -73,10 +75,10 @@ def broadcast_alert(alert_type, details):
                 data_socket = client_info['data_socket']
                 data_socket.send(message.encode())
             except:
-                # Mark client for removal
+                # client removal
                 disconnected_clients.append(client_id)
         
-        # Clean up disconnected clients
+        # clean up disconnected clients
         for client_id in disconnected_clients:
             del clients[client_id]
 
@@ -86,22 +88,22 @@ def handle_client_control(client_socket, client_address, client_id):
     
     try:
         while True:
-            # Wait for control messages from client
+            # wait for control messages from client
             command = client_socket.recv(1024).decode()
             
             if not command:
-                # Client disconnected
+                # client disconnected
                 break
                 
             if command == "TERMINATE":
-                # Client is requesting to terminate the connection
+                # client is requesting to terminate the connection
                 print(f"[+] Client {client_id} requested termination")
                 break
     except:
-        # Connection error occurred
+        # connection error 
         pass
     
-    # Clean up client connections
+    # clean up client connections
     with client_lock:
         if client_id in clients:
             print(f"[+] Closing connection with client {client_id}")
@@ -115,7 +117,7 @@ def handle_client_control(client_socket, client_address, client_id):
 def start_control_server():
     """Start the control server to handle client connections"""
     control_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    # Set socket option to allow reuse of address to prevent "bind: address already in use" errors
+    # reuse of address to avoid bind use errors
     control_server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     control_server.bind(('0.0.0.0', 8888))
     control_server.listen(5)
@@ -125,27 +127,25 @@ def start_control_server():
         while True:
             client_socket, client_address = control_server.accept()
             
-            # Generate a unique client ID
+            # generate a unique client ID
             client_id = f"client_{int(time.time())}_{client_address[0]}_{client_address[1]}"
             
-            # Send client_id to the client
+            # send client_id to the client
             client_socket.send(client_id.encode())
             
-            # Wait for data port connection
+            # wait for data port connection
             data_port = int(client_socket.recv(1024).decode())
             
-            # Wait for client to establish data connection
-            # (The client will connect to the data port after receiving the client_id)
-            
-            # Add client to the clients dictionary
+            # wait for client to establish data connection            
+            # add client to the clients dictionary
             with client_lock:
                 clients[client_id] = {
                     'control_socket': client_socket,
-                    'data_socket': None,  # Will be set when client connects to data channel
+                    'data_socket': None,  # will be set when client connects to data channel
                     'address': client_address
                 }
             
-            # Start a new thread to handle client control messages
+            # start a new thread to handle client control messages
             threading.Thread(target=handle_client_control, args=(client_socket, client_address, client_id)).start()
     except KeyboardInterrupt:
         print("\n[!] Control server stopped.")
@@ -167,16 +167,16 @@ def start_data_server():
             client_socket, client_address = data_server.accept()
             
             try:
-                # Receive client_id to identify which client is connecting
+                # receive client_id to identify which client is connecting
                 client_id = client_socket.recv(1024).decode()
                 
-                # Update clients dictionary with data socket
+                # update clients dictionary with data socket
                 with client_lock:
                     if client_id in clients:
                         clients[client_id]['data_socket'] = client_socket
                         print(f"[+] Data channel established with client {client_id}")
                     else:
-                        # Unknown client, close connection
+                        # unknown client, close connection
                         print(f"[!] Unknown client ID: {client_id}")
                         client_socket.close()
             except Exception as e:
@@ -190,11 +190,11 @@ def start_data_server():
         data_server.close()
         
 if __name__ == "__main__":
-    # Start all services in separate threads
+    # start all services in separate threads
     threading.Thread(target=start_sniffer, daemon=True).start()
     threading.Thread(target=start_data_server, daemon=True).start()
     
-    # Start control server in the main thread
+    # start control server in the main thread
     start_control_server()
     
     print("[+] Server shutdown complete.")

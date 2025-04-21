@@ -26,22 +26,21 @@ def port_scan():
     start_time = time.time()
     open_ports = []
     
-    # Use a thread pool for faster scanning
+    # use a thread pool for faster scanning
     with concurrent.futures.ThreadPoolExecutor(max_workers=100) as executor:
-        # Submit all scan tasks
+        # submit all scan tasks
         future_to_port = {
             executor.submit(scan_port, ip, port): port 
             for port in range(start_port, end_port + 1)
         }
         
-        # Process results as they complete
+        # process results 
         for future in concurrent.futures.as_completed(future_to_port):
             port = future.result()
             if port:
                 print(f"[+] Port {port} is open")
                 open_ports.append(port)
     
-    # Summary
     scan_time = time.time() - start_time
     print(f"\n[+] Scan completed in {scan_time:.2f} seconds")
     print(f"[+] {len(open_ports)} open ports found")

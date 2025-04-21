@@ -8,9 +8,11 @@
 netids/
 ├── README.md
 ├── requirements.txt
-├── run_ids.sh
+├── run_ids_client.sh
+├── run_ids_server.sh
 ├── ids/
-│   ├── sniffer.py
+│   ├── server.py
+│   ├── client.py
 │   ├── parser.py
 │   ├── logger.py
 │   └── detector/

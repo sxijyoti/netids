@@ -38,7 +38,7 @@ def create_ip_header(source_ip, dest_ip):
 
 def send_spoofed_packet():
     """Send a packet with a spoofed source IP address"""
-    # Create a raw socket
+    # create a raw socket
     try:
         s = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket.IPPROTO_RAW)
     except socket.error as e:
@@ -46,15 +46,25 @@ def send_spoofed_packet():
         print("Note: This script requires root/administrator privileges")
         return
     
-    # Get target details
+    # get target details
     dest_ip = input("Enter destination IP: ")
     
-    # Generate a fake source IP
+    # fake source IP
     fake_ips = [
-        "0.0.0.1",       # Suspicious IP starting with 0
-        "255.255.255.1", # Suspicious IP starting with 255
-        "10.0.0.1",      # Private network IP
-        "192.168.1.1"    # Private network IP
+        "0.0.0.1",       
+        "255.255.255.1", 
+        "10.0.0.1",      
+        "192.168.1.1",    
+        "206.162.192.131",
+        "34.225.57.60",
+        "241.186.103.59",
+        "96.81.115.2",
+        "183.163.223.152",
+        "119.138.237.87",
+        "22.233.164.116",
+        "154.94.118.108",
+        "93.238.241.116",
+        "215.214.209.123"
     ]
     
     source_ip = random.choice(fake_ips)
