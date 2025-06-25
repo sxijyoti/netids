@@ -2,6 +2,9 @@
 
 ### using Raw Socket Handling (CN Project)
 
+## Description:
+Network Attack &amp; Intrusion Detection System (NETIDS) is built using Python socket programming. It simulates and detects common network attacks such as DDoS, Port Scanning, and IP Spoofing in real-time. The system consists of an IDS server that monitors network traffic and a client that receives alerts. Attack simulations are done using custom-built attackers, and detection is handled without any third-party libraries. It supports multiple clients and servers, uses separate channels for control and data, and ensures smooth, error-free communication.
+
 ## Filetree:
 
 ```sh
